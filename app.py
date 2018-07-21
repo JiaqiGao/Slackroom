@@ -53,16 +53,7 @@ def get_name(userID):
 
 ##################################################################
 
-channel="CBVSC5QDC"
-text="Welcome to Slackroom!"
 
-PARAMS = {'token':slack_token, 'channel':channel}
-
-info_result = requests.get(url = info, params = PARAMS)
-
-data = info_result.json()
-
-members = data['channel']['members']
 
 def form_group(members, size):
     grouped = random_grouping(members, size) #"".join(map(str, random_grouping(members, 2)))
@@ -93,8 +84,22 @@ def form_group(members, size):
 
     #print(channels)
 
-form_group(members, 3)
 
+def init():
+    channel = "CBVSC5QDC"
+
+    PARAMS = {'token': slack_token, 'channel': channel}
+
+    info_result = requests.get(url=info, params=PARAMS)
+
+    data = info_result.json()
+
+    members = data['channel']['members']
+    form_group(members, 3)
+
+
+###for forming groups
+init()
 
 
 
