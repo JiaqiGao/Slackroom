@@ -1,9 +1,10 @@
-from flask import Flask, render_template
-app = Flask(__name__)
+from slackclient import SlackClient
 
-@app.route('/')
-def index():
-   return render_template('hello.html')
+slack_token = os.environ["SLACK_API_TOKEN"]
+sc = SlackClient(slack_token)
 
-if __name__ == '__main__':
-   app.run(debug = True)
+sc.api_call(
+  "chat.postMessage",
+  channel="C0XXXXXX",
+  text="Hello from Python! :tada:"
+)
