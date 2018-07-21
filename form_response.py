@@ -13,7 +13,7 @@ sc = SlackClient(slack_token)
 
 class Question:
 
-	def __init__(self, question, options[]):
+	def __init__(self, question, options):
 		self.question = question
 		self.options = options
 		self.answers = {}
@@ -27,7 +27,7 @@ class Question:
 		for option in options:
 			single_button = {"name":"answer", "text":option, "type":"button", "value":option}
 			actions.append(single_button)
-		buttons["action"] = actions
+		buttons["actions"] = actions
 
 		return buttons
 
@@ -92,9 +92,13 @@ channel = response.get("channel").get("id")
 
 responder = response.get("user").get("id")
 
-# questions = {}
+questions = {}
 
 active_q = None
+
+# channel = "slackroom"
+
+# response = {"callback_id":"asked", "submission":{"question": "Test question", "option1": "Hey!", "option2": "What", "option3": "yeet"}}
 
 if response.get("callback_id") == "asked":
 	submission = response.get("submission")
@@ -114,6 +118,8 @@ if response.get("callback_id") == "asked":
 
 	buttons = q.build_json()
 
+	print(buttons)
+
 	sc.api_call(
 	  "chat.postMessage",
 	  channel=channel,
@@ -121,7 +127,7 @@ if response.get("callback_id") == "asked":
 	  attachments=[buttons]
 	)
 
-else if response.get("callback_id") == active_q.name() && active_q.respondable():
+elif response.get("callback_id") == active_q.name() and active_q.respondable():
 
 	action = response.get("actions")
 	# q = questions.get(response.get("callback_id"))
@@ -129,9 +135,9 @@ else if response.get("callback_id") == active_q.name() && active_q.respondable()
 	if action.get("name") == "answer":
 		active_q.add_response(responder, action.get("value"))
 
-else if command == "/stop":
+elif command == "/stop":
 	active_q.set_respondable(False)
 
-else if command == "/stats":
+elif command == "/stats":
 	active_q.display_stats()
 
