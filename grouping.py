@@ -113,7 +113,7 @@ def form_group(size):
     grouping(members, size)
 
 
-size = 2
+size = 3
 ###for forming groups
 form_group(size)
 
