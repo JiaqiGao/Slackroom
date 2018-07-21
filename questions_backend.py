@@ -7,24 +7,26 @@ class Question:
         self.question = question
         self.num_reactions = num_reactions
 
-    def update_reactions(count):
+    def update_reactions(self, count):
         self.num_reactions = count
 
 class QuestionProcessor:
     questions = []
     place = 0
 
-    def __init__(self, questions):
-        self.questions = sort_questions(questions) 
+    def __init__(self):
 
-    def sort_questions(questions):
+    def sort_questions(self):
         self.questions = sorted(questions, cmp=lambda x,y: cmp(y.num_reactions, x.num_reactions))
 
-    def top(amount):
+    def top(self, amount):
         self.place = amount
         return questions[:amount]
 
-    def next(amount):
+    def next(self, amount):
         start = self.place
         self.place = end
         return questions[start:end]
+
+    def add_question(self, question):
+        questions.append(question)
