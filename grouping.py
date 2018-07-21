@@ -71,21 +71,21 @@ def generate_team_name():
         adj = f.read().split("\n")
     with open('nouns.txt', "r",encoding='utf-8', errors='ignore') as f:
         noun = f.read().split("\n")
-    return random.choice(adj).capitalize() + " " + random.choice(noun).capitalize()
+    return random.choice(adj).capitalize() + "-" + random.choice(noun).capitalize()
 
 
 
 def grouping(members, size):
     grouped = random_grouping(members, size) #"".join(map(str, random_grouping(members, 2)))
 
-    msg = "Here are " + str(len(grouped)) + " groups of " + str(len(grouped[0])) + " students: "
+    msg = "Here are " + str(len(grouped)) + " groups of " + str(len(grouped[0])) + " students:\n"
     for group in range(len(grouped)):
         for student in range(len(grouped[group])):
             if (student < len(grouped[0])-1):
-                msg += get_name(grouped[group][student]) + " + "
+                msg += get_name(grouped[group][student]) + ", "
             else:
                 msg += get_name(grouped[group][student])
-        msg += ", "
+        msg += "\n  "
 
     send_message("CBTUY2DUY", msg)
 
@@ -99,7 +99,7 @@ def grouping(members, size):
             new_channel.append(student)
         counter += 1
         send_message(channel_id, "Your new team consists of " + ", ".join([get_name(x) for x in group])+"!")
-        send_message(channel_id, "✨ Rename this channel with a new team name ✨ \n "
+        send_message(channel_id, "✨ Rename this channel with a new team name! ✨ \n "
                                  "_Can't think of one?_ How about `"+generate_team_name()+"`?")
         channels["channel_id"] = new_channel
 
@@ -113,7 +113,7 @@ def form_group(size):
     grouping(members, size)
 
 
-size = 3
+size = 2
 ###for forming groups
 form_group(size)
 
