@@ -11,10 +11,10 @@ slack_token = config['TEST']['TOKEN']
 
 sc = SlackClient(slack_token)
 
-elements = [{"type": "text", "label": "Question", "name": "question"}]
+questionElements = [{"type": "text", "label": "Question", "name": "question"}]
 
-elements.append({"type": "text", "label": "Class Name", "name": 'class_room'})
-elements.append({"type": "select", "label": "", "name": 'class_room', "options": [
+questionElements.append({"type": "text", "label": "Class Name", "name": 'class_room'})
+questionElements.append({"type": "select", "label": "", "name": 'class_room', "options": [
     {
         "label": "Monday",
         "value": "monday"
@@ -37,16 +37,16 @@ elements.append({"type": "select", "label": "", "name": 'class_room', "options":
     }
 ]})
 
-elements.append({"type": "text", "label": "Start Time", "name": 'start_time'})
-elements.append({"type": "text", "label": "End Time", "name": 'end_time'})
+questionElements.append({"type": "text", "label": "Start Time", "name": 'start_time'})
+questionElements.append({"type": "text", "label": "End Time", "name": 'end_time'})
 
-question_dialog = {"callback_id": "scheduled", "title": "Schedule Question Form", "elements": elements}
+questions_dialog = {"callback_id": "scheduled", "title": "Schedule Question Form", "elements": questionElements}
 
 # EB looks for an 'application' callable by default.
 application = Flask(__name__)
 
 
-@application.route('/schedule', methods=['GET', 'POST'])
+@application.route('/', methods=['GET', 'POST'])
 def schedule_command():
     dictionary = {
         'text': 'Hello from Slackroom!'
