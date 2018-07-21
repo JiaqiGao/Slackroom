@@ -71,7 +71,7 @@ def generate_team_name():
         adj = f.read().split("\n")
     with open('nouns.txt', "r",encoding='utf-8', errors='ignore') as f:
         noun = f.read().split("\n")
-    return random.choice(adj).capitalize() + "-" + random.choice(noun).capitalize()
+    return random.choice(adj) + "-" + random.choice(noun)
 
 
 
