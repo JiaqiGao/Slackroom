@@ -6,8 +6,12 @@ import random
 msg = "https://slack.com/api/chat.postMessage"
 info = "https://slack.com/api/channels.info"
 
+dialog = "https://slack.com/api/dialog.open"
+
 
 slack_token = os.environ["TOKEN"]
+#sc = SlackClient(slack_token)
+
 
 # create channel and returns id
 def create_channel(channel_name):
@@ -30,6 +34,11 @@ def send_message(channelID, text):
     send_message = "https://slack.com/api/chat.postMessage"
     params = {'token': slack_token, 'channel': channelID, 'text': text}
     send_message_post = requests.post(url=send_message, params=params)
+   # sc.api_call(
+    #    "chat.postMessage",
+     #   channel=channelID,
+      #  text=text
+    #)
     return True
 
 # returns a list of lists, randoming grouping the members given a group size
@@ -55,7 +64,7 @@ def get_name(userID):
 
 
 
-def form_group(members, size):
+def grouping(members, size):
     grouped = random_grouping(members, size) #"".join(map(str, random_grouping(members, 2)))
 
     msg = "Here are " + str(len(grouped)) + " groups of " + str(len(grouped[0])) + " students: "
@@ -70,7 +79,7 @@ def form_group(members, size):
     send_message("CBTUY2DUY", msg)
 
     channels = {} # dict of channel ids: [memberids]
-    counter = 42
+    counter = random.randint(0,1000)
     for group in grouped:
         channel_id = create_channel("team"+str(counter))
         new_channel = []
@@ -85,21 +94,20 @@ def form_group(members, size):
     #print(channels)
 
 
-def init():
+def form_group(size):
     channel = "CBVSC5QDC"
-
     PARAMS = {'token': slack_token, 'channel': channel}
-
     info_result = requests.get(url=info, params=PARAMS)
-
     data = info_result.json()
-
     members = data['channel']['members']
-    form_group(members, 3)
+    grouping(members, size)
 
 
+size = 6
 ###for forming groups
-init()
+form_group(size)
+
+##  trigger_id
 
 
 
