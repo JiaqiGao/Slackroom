@@ -8,8 +8,6 @@ info = "https://slack.com/api/channels.info"
 
 
 slack_token = os.environ["TOKEN"]
-channel="CBVSC5QDC"
-text="Welcome to Slackroom!"
 
 # create channel and returns id
 def create_channel(channel_name):
@@ -53,9 +51,10 @@ def get_name(userID):
     return mem_result['user']['name']
 
 
-
-
 ##################################################################
+
+channel="CBVSC5QDC"
+text="Welcome to Slackroom!"
 
 PARAMS = {'token':slack_token, 'channel':channel}
 
@@ -65,25 +64,36 @@ data = info_result.json()
 
 members = data['channel']['members']
 
-grouped = random_grouping(members, 3) #"".join(map(str, random_grouping(members, 2)))
+def form_group(members, size):
+    grouped = random_grouping(members, size) #"".join(map(str, random_grouping(members, 2)))
 
-msg = "Here are " + str(len(grouped)) + " groups of " + str(len(grouped[0])) + " students: "
-for group in range(len(grouped)):
-    for student in range(len(grouped[group])):
-        if (student < len(grouped[0])-1):
-            msg += get_name(grouped[group][student]) + " + "
-        else:
-            msg += get_name(grouped[group][student])
-    msg += ", "
+    msg = "Here are " + str(len(grouped)) + " groups of " + str(len(grouped[0])) + " students: "
+    for group in range(len(grouped)):
+        for student in range(len(grouped[group])):
+            if (student < len(grouped[0])-1):
+                msg += get_name(grouped[group][student]) + " + "
+            else:
+                msg += get_name(grouped[group][student])
+        msg += ", "
 
-send_message("CBTUY2DUY", msg)
+    send_message("CBTUY2DUY", msg)
 
-counter = 5
-for group in grouped:
-    channel_id = create_channel("team_"+str(counter))
-    for student in group:
-        add_to_channel(student, channel_id)
-    counter += 1
+    channels = {} # dict of channel ids: [memberids]
+    counter = 42
+    for group in grouped:
+        channel_id = create_channel("team"+str(counter))
+        new_channel = []
+        for student in group:
+            add_to_channel(student, channel_id)
+            new_channel.append(student)
+        counter += 1
+        send_message(channel_id, "Your new team consists of " + ", ".join([get_name(x) for x in group]))
+        send_message(channel_id, "Create a team name!")
+        channels["channel_id"] = new_channel
+
+    #print(channels)
+
+form_group(members, 3)
 
 
 
