@@ -1,11 +1,15 @@
-from slackclient import SlackClient
 import os
+import configparser
+from slackclient import SlackClient
 
-slack_token = os.environ["TOKEN"]
+config = configparser.ConfigParser()
+config.read('config.ini')
+slack_token = config['TEST']['TOKEN']
+
 sc = SlackClient(slack_token)
 
 sc.api_call(
   "chat.postMessage",
   channel="slackroom",
-  text="Hello from Python! :tada:"
+  text="Hello from Winson! :tada:"
 )
