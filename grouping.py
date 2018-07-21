@@ -116,8 +116,8 @@ def form_group(size):
 size = 3
 ###for forming groups
 form_group(size)
-#print (generate_team_name())
-##  trigger_id
+
+
 
 
 
