@@ -2,12 +2,20 @@ import os
 from slackclient import SlackClient
 import requests
 import random
+import configparser
+
 
 msg = "https://slack.com/api/chat.postMessage"
 info = "https://slack.com/api/channels.info"
 
+dialog = "https://slack.com/api/dialog.open"
 
-slack_token = os.environ["TOKEN"]
+
+config = configparser.ConfigParser()
+config.read('config.ini')
+slack_token = config['TEST']['TOKEN']
+sc = SlackClient(slack_token)
+
 
 # create channel and returns id
 def create_channel(channel_name):
@@ -30,6 +38,11 @@ def send_message(channelID, text):
     send_message = "https://slack.com/api/chat.postMessage"
     params = {'token': slack_token, 'channel': channelID, 'text': text}
     send_message_post = requests.post(url=send_message, params=params)
+   # sc.api_call(
+    #    "chat.postMessage",
+     #   channel=channelID,
+      #  text=text
+    #)
     return True
 
 # returns a list of lists, randoming grouping the members given a group size
@@ -53,9 +66,16 @@ def get_name(userID):
 
 ##################################################################
 
+def generate_team_name():
+    with open('adjectives.txt', "r",encoding='utf-8', errors='ignore') as f:
+        adj = f.read().split("\n")
+    with open('nouns.txt', "r",encoding='utf-8', errors='ignore') as f:
+        noun = f.read().split("\n")
+    return random.choice(adj).capitalize() + " " + random.choice(noun).capitalize()
 
 
-def form_group(members, size):
+
+def grouping(members, size):
     grouped = random_grouping(members, size) #"".join(map(str, random_grouping(members, 2)))
 
     msg = "Here are " + str(len(grouped)) + " groups of " + str(len(grouped[0])) + " students: "
@@ -70,36 +90,34 @@ def form_group(members, size):
     send_message("CBTUY2DUY", msg)
 
     channels = {} # dict of channel ids: [memberids]
-    counter = 42
+    counter = random.randint(0,1000)
     for group in grouped:
-        channel_id = create_channel("team"+str(counter))
+        channel_id = create_channel("team_"+str(counter))
         new_channel = []
         for student in group:
             add_to_channel(student, channel_id)
             new_channel.append(student)
         counter += 1
-        send_message(channel_id, "Your new team consists of " + ", ".join([get_name(x) for x in group]))
-        send_message(channel_id, "Create a team name!")
+        send_message(channel_id, "Your new team consists of " + ", ".join([get_name(x) for x in group])+"!")
+        send_message(channel_id, "✨ Rename this channel with a new team name ✨ \n "
+                                 "_Can't think of one?_ How about `"+generate_team_name()+"`?")
         channels["channel_id"] = new_channel
 
-    #print(channels)
 
-
-def init():
+def form_group(size):
     channel = "CBVSC5QDC"
-
     PARAMS = {'token': slack_token, 'channel': channel}
-
     info_result = requests.get(url=info, params=PARAMS)
-
     data = info_result.json()
-
     members = data['channel']['members']
-    form_group(members, 3)
+    grouping(members, size)
 
 
+size = 3
 ###for forming groups
-init()
+form_group(size)
+#print (generate_team_name())
+##  trigger_id
 
 
 
