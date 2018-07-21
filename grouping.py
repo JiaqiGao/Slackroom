@@ -78,7 +78,7 @@ def generate_team_name():
 def grouping(members, size):
     grouped = random_grouping(members, size) #"".join(map(str, random_grouping(members, 2)))
 
-    msg = "Here are " + str(len(grouped)) + " groups of " + str(len(grouped[0])) + " students:\n"
+    msg = "*Here are " + str(len(grouped)) + " teams of " + str(len(grouped[0])) + " students:*\n"
     for group in range(len(grouped)):
         for student in range(len(grouped[group])):
             if (student < len(grouped[0])-1):
@@ -90,9 +90,9 @@ def grouping(members, size):
     send_message("CBTUY2DUY", msg)
 
     channels = {} # dict of channel ids: [memberids]
-    counter = random.randint(0,1000)
+    counter = random.randint(0,10000)
     for group in grouped:
-        channel_id = create_channel("team_"+str(counter))
+        channel_id = create_channel("team-"+str(counter))
         new_channel = []
         for student in group:
             add_to_channel(student, channel_id)
