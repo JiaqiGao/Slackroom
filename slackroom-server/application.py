@@ -1,13 +1,15 @@
 import os
 import json
 import random
-import requests
 import configparser
-from flask import Flask
-from flask import request
-import numpy as np
-import matplotlib.pyplot as plt
+
 from slackclient import SlackClient
+import requests
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import numpy as np
+from flask import request, Flask
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -104,19 +106,7 @@ class Question:
             attachments=[image]
         )
 
-    # poll_response = json.loads(payload)
-
-
-#
-# channel = poll_response.get("channel").get("id")
-#
-# responder = poll_response.get("user").get("id")
-
-channel = "slackroom"
-
-responder = "@shaynak"
-
-questions = {}
+        return response_string
 
 
 
@@ -151,6 +141,7 @@ questionElements.append({"type": "select", "label": "", "name": "class_room", "o
 questionElements.append({"type": "text", "label": "Start Time", "name": "start_time"})
 questionElements.append({"type": "text", "label": "End Time", "name": "end_time"})
 
+questions_dialog = {"callback_id": "scheduled", "title": "Schedule Question Form", "elements": questionElements}
 questions_dialog = {"callback_id": "scheduled", "title": "Schedule Question Form", "elements": questionElements}
 
 # EB looks for an 'application' callable by default.
@@ -258,45 +249,59 @@ active_q = None
 @application.route('/', methods=['GET', 'POST'])
 def hello_world():
     toReturn = 'huh?'
-    if (request.form.get('callback_id')) == 'asked':
+    global active_q
+    print(request.form)
+    if 'payload' in request.form:
+        toReturn = 'payloadz'
+        payload = request.form.get('payload')
+        payload = json.loads(payload)
+        print(payload)
+        channel = payload.get("channel").get("id")
+        responder = payload.get("user").get("id")
 
-        submission = request.form.get("submission")
-        question = submission.get("question")
-        options = []
+        channel = "slackroom"
+        responder = "@shaynak"
+        questions = {}
 
-        for i in range(1, 5):
-            option = submission.get("option" + str(i))
-            if option is not None:
-                options.append(option)
+        if (payload.get('callback_id')) == 'asked':
+            submission = payload.get("submission")
+            question = submission.get("question")
+            options = []
 
-        q = Question(question, options)
+            for i in range(1, 5):
+                option = submission.get("option" + str(i))
+                if option is not None:
+                    options.append(option)
 
-        active_q = q
+            q = Question(question, options)
 
-        # questions.add("question":Question)
+            active_q = q
 
-        buttons = q.build_json()
+            # questions.add("question":Question)
 
-        print(buttons)
+            buttons = q.build_json()
 
-        sc.api_call(
-            "chat.postMessage",
-            channel=channel,
-            text="Please respond to this question!",
-            attachments=[buttons])
+            print(buttons)
 
-    elif active_q is not None and request.form.get("callback_id") == active_q.name() and active_q.respondable():
-        action = request.form.get("actions")
-        # q = questions.get(response.get("callback_id"))
+            sc.api_call(
+                "chat.postMessage",
+                channel=channel,
+                text="Please respond to this question!",
+                attachments=[buttons])
 
-        if action.get("name") == "answer":
-            active_q.add_response(responder, action.get("value"))
+        elif active_q is not None and payload.get("callback_id") == active_q.name() and active_q.respondable():
+            action = payload.get("actions")
+            # q = questions.get(response.get("callback_id"))
+
+            if action.get("name") == "answer":
+                active_q.add_response(responder, action.get("value"))
 
     elif request.form.get('command') == "/stop" and active_q is not None:
+        toReturn = "Stopped!"
         active_q.set_respondable(False)
 
     elif request.form.get('command') == "/stats" and active_q is not None:
-        active_q.display_stats()
+        toReturn = active_q.display_stats()
 
     elif request.form.get('command') == '/schedule':
         sc.api_call(
@@ -315,21 +320,19 @@ def hello_world():
     elif (request.form.get('command')) == '/random-groups':
         toReturn = 'Forming groups!'
         init()
-        dictionary = {
-            "text": toReturn
-        }
-        response = application.response_class(
-            response=json.dumps(dictionary),
-            status=200,
-            mimetype='application/json',
-        )
-        return response
+    dictionary = {
+        "text": toReturn
+    }
+    response = application.response_class(
+        response=json.dumps(dictionary),
+        status=200,
+        mimetype='application/json',
+    )
+    return response
 
-    # run the app.
-    if __name__ == "__main__":
-        # Setting debug to True enables debug output. This line should be
-        # removed before deploying a production app.
-        application.debug = True
-
-
-application.run()
+# run the app.
+if __name__ == "__main__":
+    # Setting debug to True enables debug output. This line should be
+    # removed before deploying a production app.
+    application.debug = True
+    application.run()
