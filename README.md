@@ -1,5 +1,11 @@
 # Slackroom
 
+# Usage
+
+1. Edit config.ini.example and add your token
+2. mv config.ini.example config.ini
+3. python3 messages.py
+
 # Open source Python polling
 
 https://github.com/egibar/Slackbot
