@@ -4,7 +4,6 @@ import requests
 
 msg = "https://slack.com/api/chat.postMessage"
 info = "https://slack.com/api/channels.info"
-invite_to_channel = "https://slack.com/api/channels.invite"
 
 
 slack_token = os.environ["TOKEN"]
@@ -21,8 +20,9 @@ def create_channel(channel_name):
 
 # add user to channel
 def add_to_channel(userID, channelID):
-  channel_invite_params = {'token': slack_token, 'channel': channelID, user: userID}
-  channel_invite_post = requests.post(url=create_channel, params=channel_invite_params)
+  invite_to_channel = "https://slack.com/api/channels.invite"
+  channel_invite_params = {'token': slack_token, 'channel': channelID, 'user': userID}
+  channel_invite_post = requests.post(url=invite_to_channel, params=channel_invite_params)
   result = channel_invite_post.json()
   return True
 
@@ -38,12 +38,13 @@ data = info_result.json()
 
 members = data['channel']['members']
 
-channel_name = create_channel("team_1")
+#channel_name = create_channel("team_1")
 
-print (channel_name)
+#print (channel_name)
+# print (members)
 
-#for member in members:
- # add_to_channel(member, channel_name)
+for member in members:
+  add_to_channel(member, "CBTUY2DUY")
 
 
 #print (members)
