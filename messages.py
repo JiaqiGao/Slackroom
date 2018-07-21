@@ -1,10 +1,11 @@
 from slackclient import SlackClient
+import os
 
-slack_token = os.environ["SLACK_API_TOKEN"]
+slack_token = os.environ["TOKEN"]
 sc = SlackClient(slack_token)
 
 sc.api_call(
   "chat.postMessage",
-  channel="C0XXXXXX",
+  channel="slackroom",
   text="Hello from Python! :tada:"
 )
