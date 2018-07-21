@@ -6,11 +6,16 @@ import time
 config = configparser.ConfigParser()
 config.read('config.ini')
 slack_token = config['TEST']['TOKEN']
+bot_token = config['TEST']['BOT_TOKEN']
 
 DAY_SECONDS = 24 * 60 * 60
 sc = SlackClient(slack_token)
 
 last_get_ts = ""
+bot_id = sc.api_call(
+            "auth.test",
+            token=bot_token)["user_id"]
+            
 
 def get_top_questions(amount):
     # read messages for a thread
