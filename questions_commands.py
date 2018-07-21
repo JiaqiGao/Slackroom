@@ -10,6 +10,7 @@ bot_token = config['TEST']['BOT_TOKEN']
 
 DAY_SECONDS = 24 * 60 * 60
 sc = SlackClient(slack_token)
+question_processor = QuestionProcessor()
 
 last_get_ts = ""
 bot_id = sc.api_call(
@@ -51,7 +52,6 @@ def get_top_questions(amount):
 
     # sorts all questions and gets top n questions based on reactions
     replies = thread[1:]
-    question_processor = QuestionProcessor()
     for reply in replies:
         question_processor.add_question(reply)
     question_processor.sort_questions()
