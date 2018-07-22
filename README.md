@@ -1,5 +1,7 @@
 # Slackroom
 
+Experimenting with Slack APIs to create an educational tool for teachers in a classroom setting
+
 # Usage
 
 1. Edit config.ini.example and add your token
