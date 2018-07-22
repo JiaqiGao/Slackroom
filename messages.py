@@ -45,6 +45,7 @@ sc = SlackClient(slack_token)
 # 	)
 
 elements = [{"type":"text", "label":"Question", "name":"question"}]
+
 for i in range(1, 5):
 	element_name = "option" + str(i)
 	elements.append({"type":"text", "label":"Option", "name":element_name})

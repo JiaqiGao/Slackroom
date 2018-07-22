@@ -39,6 +39,8 @@ class Question:
         self.question = question
         self.options = options
 
+    def __str__(self):
+        return self.question
 
     def build_json(self):
         buttons = {"text": self.question, "fallback": "Sorry, can't display the question right now.",
@@ -251,6 +253,9 @@ def hello_world():
     toReturn = 'huh?'
     global active_q
     print(request.form)
+    channel = "slackroom"
+    responder = "@shaynak"
+    print(active_q)
     if 'payload' in request.form:
         toReturn = 'payloadz'
         payload = request.form.get('payload')
@@ -259,8 +264,6 @@ def hello_world():
         channel = payload.get("channel").get("id")
         responder = payload.get("user").get("id")
 
-        channel = "slackroom"
-        responder = "@shaynak"
         questions = {}
 
         if (payload.get('callback_id')) == 'asked':
