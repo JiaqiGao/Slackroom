@@ -53,6 +53,8 @@ def get_top_questions(amount):
     # sorts all questions and gets top n questions based on reactions
     replies = thread[1:]
     for reply in replies:
+        msg = sc.api_call("reactions.get", token=slack_token_grouping, channel="channelllll", full="true", timestamp=reply["ts"])
+        q = Question(reply["text"], msg["file"]["reactions"]["count"])
         question_processor.add_question(reply)
     question_processor.sort_questions()
     return question_processor.top(amount)
