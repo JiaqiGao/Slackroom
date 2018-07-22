@@ -81,7 +81,6 @@ def generate_top_questions(list_questions):
         question_statement = question_statement + "\n" + list_questions[x].question +" "\
                              +str(list_questions[x].num_reactions)+" "+":thumbsup:"
 
-    return question_statement
     send_message(channel, question_statement)
 
 class ListQ():
